@@ -128,7 +128,7 @@ PosedBodyPointDecompositionVectorPtr getAttachedBodyPointDecomposition(const mov
   return ret;
 }
 
-void getBodySphereVisualizationMarkers(const GroupStateRepresentationConstPtr& gsr, const std::string& reference_frame,
+void getBodySphereVisualizationMarkers(const GroupStateRepresentationPtr& gsr, const std::string& reference_frame,
                                        visualization_msgs::MarkerArray& body_marker_array)
 {
   // creating namespaces
@@ -178,9 +178,11 @@ void getBodySphereVisualizationMarkers(const GroupStateRepresentationConstPtr& g
       {
         sphere_marker.pose.position = tf2::toMsg(sphere_representation->getSphereCenters()[j]);
         sphere_marker.scale.x = sphere_marker.scale.y = sphere_marker.scale.z =
-            sphere_representation->getCollisionSpheres()[j].radius_;
+            (sphere_representation->getCollisionSpheres()[j].radius_) * 2;
         sphere_marker.id = id;
         id++;
+
+        ROS_INFO_STREAM("marker pos: " << sphere_marker.pose.position.x << " " << sphere_marker.pose.position.y << " " << sphere_marker.pose.position.z);
 
         body_marker_array.markers.push_back(sphere_marker);
       }

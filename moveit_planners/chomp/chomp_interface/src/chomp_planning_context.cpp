@@ -45,11 +45,12 @@ CHOMPPlanningContext::CHOMPPlanningContext(const std::string& name, const std::s
   : planning_interface::PlanningContext(name, group), robot_model_(model)
 {
   chomp_interface_ = CHOMPInterfacePtr(new CHOMPInterface(nh));
+  vis_pub_ = nh.advertise<visualization_msgs::Marker>("/visualization_marker", 40);
 }
 
 bool CHOMPPlanningContext::solve(planning_interface::MotionPlanDetailedResponse& res)
 {
-  return chomp_interface_->solve(planning_scene_, request_, chomp_interface_->getParams(), res);
+  return chomp_interface_->solve(planning_scene_, request_, chomp_interface_->getParams(), res, vis_pub_);
 }
 
 bool CHOMPPlanningContext::solve(planning_interface::MotionPlanResponse& res)

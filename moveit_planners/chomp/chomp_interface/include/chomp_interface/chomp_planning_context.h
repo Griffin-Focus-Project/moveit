@@ -60,6 +60,8 @@ public:
   void initialize();
 
 private:
+  ros::Publisher vis_pub_;
+
   CHOMPInterfacePtr chomp_interface_;
   moveit::core::RobotModelConstPtr robot_model_;
 };

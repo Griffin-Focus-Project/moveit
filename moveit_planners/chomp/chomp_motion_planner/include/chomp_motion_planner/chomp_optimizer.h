@@ -55,7 +55,8 @@ class ChompOptimizer
 public:
   ChompOptimizer(ChompTrajectory* trajectory, const planning_scene::PlanningSceneConstPtr& planning_scene,
                  const std::string& planning_group, const ChompParameters* parameters,
-                 const moveit::core::RobotState& start_state);
+                 const moveit::core::RobotState& start_state,
+                 ros::Publisher pub);
 
   virtual ~ChompOptimizer();
 
@@ -111,6 +112,8 @@ private:
   void setRobotStateFromPoint(ChompTrajectory& group_trajectory, int i);
 
   // collision_proximity::CollisionProximitySpace::TrajectorySafety checkCurrentIterValidity();
+
+  ros::Publisher pub_;
 
   int num_joints_;
   int num_vars_free_;

@@ -45,7 +45,8 @@ namespace chomp
 {
 bool ChompPlanner::solve(const planning_scene::PlanningSceneConstPtr& planning_scene,
                          const planning_interface::MotionPlanRequest& req, const ChompParameters& params,
-                         planning_interface::MotionPlanDetailedResponse& res) const
+                         planning_interface::MotionPlanDetailedResponse& res,
+                         ros::Publisher pub) const
 {
   ros::WallTime start_time = ros::WallTime::now();
   if (!planning_scene)
@@ -174,7 +175,7 @@ bool ChompPlanner::solve(const planning_scene::PlanningSceneConstPtr& planning_s
 
     // initialize a ChompOptimizer object to load up the optimizer with default parameters or with updated parameters in
     // case of a recovery behaviour
-    optimizer.reset(new ChompOptimizer(&trajectory, planning_scene, req.group_name, &params_nonconst, start_state));
+    optimizer.reset(new ChompOptimizer(&trajectory, planning_scene, req.group_name, &params_nonconst, start_state, pub));
     if (!optimizer->isInitialized())
     {
       ROS_ERROR_STREAM_NAMED("chomp_planner", "Could not initialize optimizer");

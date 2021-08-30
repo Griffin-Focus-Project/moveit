@@ -56,7 +56,8 @@ double getRandomDouble()
 
 ChompOptimizer::ChompOptimizer(ChompTrajectory* trajectory, const planning_scene::PlanningSceneConstPtr& planning_scene,
                                const std::string& planning_group, const ChompParameters* parameters,
-                               const moveit::core::RobotState& start_state)
+                               const moveit::core::RobotState& start_state, 
+                               ros::Publisher pub)
   : full_trajectory_(trajectory)
   , robot_model_(planning_scene->getRobotModel())
   , planning_group_(planning_group)
@@ -67,6 +68,9 @@ ChompOptimizer::ChompOptimizer(ChompTrajectory* trajectory, const planning_scene
   , start_state_(start_state)
   , initialized_(false)
 {
+
+  pub_ = pub;
+
   std::vector<std::string> cd_names;
   planning_scene->getCollisionDetectorNames(cd_names);
 
@@ -110,6 +114,10 @@ void ChompOptimizer::initialize()
   {
     num_collision_points_ += gradient.gradients.size();
   }
+
+  // visualization_msgs::MarkerArray marker_arr;
+  // collision_detection::getBodySphereVisualizationMarkers(gsr_, "world", marker_arr);
+  // pub_.publish(marker_arr);
 
   // set up the joint costs:
   joint_costs_.reserve(num_joints_);
@@ -955,6 +963,30 @@ void ChompOptimizer::performForwardKinematics()
           collision_point_potential_gradient_[i][j][2] = info.gradients[k].z();
 
           point_is_in_collision_[i][j] = (info.distances[k] - info.sphere_radii[k] < info.sphere_radii[k]);
+
+
+          if (i == start) {
+            ROS_WARN_STREAM("publishing markers");
+            visualization_msgs::Marker marker;
+            marker.header.frame_id = "world";
+            marker.id = j;
+            marker.type = visualization_msgs::Marker::SPHERE;
+            marker.pose.position.x = info.sphere_locations[k].x();
+            marker.pose.position.y = info.sphere_locations[k].y();
+            marker.pose.position.z = info.sphere_locations[k].z();
+            marker.pose.orientation.x = 0.0;
+            marker.pose.orientation.y = 0.0;
+            marker.pose.orientation.z = 0.0;
+            marker.pose.orientation.w = 1.0;
+            marker.scale.x = 2*info.sphere_radii[k];
+            marker.scale.y = 2*info.sphere_radii[k];
+            marker.scale.z = 2*info.sphere_radii[k];
+            marker.color.a = 0.5;
+            marker.color.r = 0.1;
+            marker.color.g = 1.0;
+            marker.color.b = 0.0;
+            pub_.publish(marker);
+          }
 
           if (point_is_in_collision_[i][j])
           {
