@@ -49,9 +49,9 @@ static const double DEFAULT_SIZE_X = 20.0; // default = 3.0
 static const double DEFAULT_SIZE_Y = 20.0; // default = 3.0
 static const double DEFAULT_SIZE_Z = 10.0; // default = 4.0
 static const bool DEFAULT_USE_SIGNED_DISTANCE_FIELD = true; // default = false
-static const double DEFAULT_RESOLUTION = .05;
+static const double DEFAULT_RESOLUTION = .1;
 static const double DEFAULT_COLLISION_TOLERANCE = 0.0;
-static const double DEFAULT_MAX_PROPOGATION_DISTANCE = 2.5; //default = 0.25
+static const double DEFAULT_MAX_PROPOGATION_DISTANCE = 1.0; //default = 0.25
 
 MOVEIT_CLASS_FORWARD(CollisionEnvDistanceField);  // Defines CollisionEnvDistanceFieldPtr, ConstPtr, WeakPtr... etc
 
